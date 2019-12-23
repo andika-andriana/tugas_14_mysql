@@ -1,0 +1,36 @@
+MariaDB [belajar]> DELIMITER //
+MariaDB [belajar]> CREATE TRIGGER after_user_insert
+    -> AFTER INSERT ON nilai_mahasiswa
+    -> FOR EACH ROW BEGIN
+    ->  DECLARE nilai_satu VARCHAR(50);
+    ->  DECLARE nilai_dua DECIMAL(4,2);
+    ->  SET nilai_satu = CONCAT(UPPER(NEW.nama),' (',NEW.nim,') ');
+    ->  SET nilai_dua = ROUND(((NEW.semester_1+NEW.semester_2+NEW.semester_3)/3),2);
+    ->  INSERT INTO ipk_mahasiswa VALUES(nilai_satu,nilai_dua);
+    -> END //
+Query OK, 0 rows affected (0.106 sec)
+
+MariaDB [belajar]> DELIMITER ;
+MariaDB [belajar]> INSERT INTO nilai_mahasiswa VALUES ('17090113', 'Riana Putria', 3.12, 2.98, 3.45);
+Query OK, 1 row affected (0.124 sec)
+
+MariaDB [belajar]> INSERT INTO nilai_mahasiswa VALUES ('17140143', 'Rudi Permana', 2.56, 3.14, 3.22);
+Query OK, 1 row affected (0.143 sec)
+
+MariaDB [belajar]> SELECT * FROM nilai_mahasiswa;
++----------+--------------+------------+------------+------------+
+| nim      | nama         | semester_1 | semester_2 | semester_3 |
++----------+--------------+------------+------------+------------+
+| 17090113 | Riana Putria |       3.12 |       2.98 |       3.45 |
+| 17140143 | Rudi Permana |       2.56 |       3.14 |       3.22 |
++----------+--------------+------------+------------+------------+
+2 rows in set (0.000 sec)
+
+MariaDB [belajar]> SELECT * FROM ipk_mahasiswa;
++--------------------------+-----------+
+| nama_dan_nip             | nilai_ipk |
++--------------------------+-----------+
+| RIANA PUTRIA (17090113)  |      3.18 |
+| RUDI PERMANA (17140143)  |      2.97 |
++--------------------------+-----------+
+2 rows in set (0.000 sec)
